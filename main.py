@@ -4,7 +4,7 @@ import json
 import pandas as pd
 import matplotlib as mlp
 import matplotlib.pyplot as plt
-from mplsoccer.pitch import pitch
+from mplsoccer.pitch import Pitch
 
 
 def get_data(match_id):
@@ -23,17 +23,24 @@ def get_data(match_id):
     return json.loads(json_data)
 
 
-def append_data(shot_data, shot_event):
+def append_data(shot_data, shot_event, team):
     shot_data['x_loc'].append((shot_event['X']))
     shot_data['y_loc'].append(shot_event['Y'])
     shot_data['xg'].append(shot_event['xG'])
-    shot_data['team'].append(shot_event['h_team'])
+    shot_data['team'].append(shot_event[f'{team}_team'])
     shot_data['player'].append(shot_event['player'])
     shot_data['minute'].append(shot_event['minute'])
 
 
+def pitch_testing():
+    text_color ='w'
+    # Get data in data frame
+
+    # Minute Second Team x y Outcome
+
 
 def main():
+    # Change program - instead of arrays direct to pd
     match_ids = ['18345','18346', '18347', '18351', '18344', '18343', '18342', '18348', '18350', '18349']
     shot_data = {
         'x_loc': [],
@@ -53,15 +60,24 @@ def main():
 
         for shot_event in data_home:
             if shot_event['result'] == 'Goal':
-                append_data(shot_data, shot_event)
+                append_data(shot_data, shot_event, 'h')
 
         for shot_event in data_away:
             if shot_event['result'] == 'Goal':
-                append_data(shot_data, shot_event)
+                append_data(shot_data, shot_event, 'a')
 
+
+    for i, v in enumerate(shot_data['player']):
+        print(shot_data['player'][i])
+        print(shot_data['team'][i])
+        print(shot_data['xg'][i])
 
 main()
 
+# Place data in a dataframe
+
+# https://www.youtube.com/watch?v=2RhTuRWNqUc&ab_channel=McKayJohns
+# Check for video on pitches he mentions in intro
 
 
 	
