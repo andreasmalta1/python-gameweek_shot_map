@@ -4,7 +4,7 @@ import json
 import pandas as pd
 import matplotlib as mlp
 import matplotlib.pyplot as plt
-from mplsoccer.pitch import Pitch
+from mplsoccer.pitch import VerticalPitch
 
 
 def get_data(match_id):
@@ -24,19 +24,35 @@ def get_data(match_id):
 
 
 def append_data(shot_data, shot_event, team):
-    shot_data['x_loc'].append((shot_event['X']))
-    shot_data['y_loc'].append(shot_event['Y'])
-    shot_data['xg'].append(shot_event['xG'])
+    team_against = 'h'
+    if team == 'h':
+        team_against = 'a'
+    
+    shot_data['x_loc'].append(float(shot_event['X'])*120)
+    shot_data['y_loc'].append(float(shot_event['Y'])*80)
+    shot_data['xg'].append(float(shot_event['xG']))
     shot_data['team'].append(shot_event[f'{team}_team'])
+    shot_data['team_against'].append(shot_event[f'{team_against}_team'])
     shot_data['player'].append(shot_event['player'])
     shot_data['minute'].append(shot_event['minute'])
 
 
-def pitch_testing():
+def pitch_testing(df):
     text_color ='w'
-    # Get data in data frame
+    pitch = VerticalPitch(pitch_type='statsbomb', pitch_color='#22312B',
+                            line_color='#C7D5CC', half=True)
 
-    # Minute Second Team x y Outcome
+    fig, ax = pitch.draw(figsize=(13, 8.5), constrained_layout=True, tight_layout=False)
+    fig.set_facecolor('#22312B')
+    ax.patch.set_facecolor('#22312B')
+
+    print(df['x_loc'])
+    print(df['y_loc'])
+    print(df['player'])
+
+    pitch.scatter(df['x_loc'], df['y_loc'], ax=ax)
+
+    plt.show()
 
 
 def main():
@@ -46,13 +62,13 @@ def main():
         'y_loc': [],
         'xg': [],
         'team': [],
+        'team_against': [],
         'player': [],
         'minute': [],   
     }
 
     for match_id in match_ids:
         data = get_data(match_id)
-        # print(json_data)
 
         data_home = data['h']
         data_away = data['a']
@@ -65,8 +81,9 @@ def main():
             if shot_event['result'] == 'Goal':
                 append_data(shot_data, shot_event, 'a')
 
-
     df = pd.DataFrame(shot_data)
+    pitch_testing(df)
+    print(df.loc[df['xg'].idxmax()])
 
 main()
 
