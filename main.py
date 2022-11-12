@@ -40,7 +40,6 @@ def pitch_testing():
 
 
 def main():
-    # Change program - instead of arrays direct to pd
     match_ids = ['18345','18346', '18347', '18351', '18344', '18343', '18342', '18348', '18350', '18349']
     shot_data = {
         'x_loc': [],
@@ -67,60 +66,9 @@ def main():
                 append_data(shot_data, shot_event, 'a')
 
 
-    for i, v in enumerate(shot_data['player']):
-        print(shot_data['player'][i])
-        print(shot_data['team'][i])
-        print(shot_data['xg'][i])
+    df = pd.DataFrame(shot_data)
 
 main()
 
-# Place data in a dataframe
-
 # https://www.youtube.com/watch?v=2RhTuRWNqUc&ab_channel=McKayJohns
 # Check for video on pitches he mentions in intro
-
-
-	
-
-	
-
-	
-
-	
-
-	
-
-# def get_xg(data):
-
-# 	x, y, xg, team, minute = [], [], [], [], []
-
-# 	data_home = data['h']
-# 	data_away = data['a']
-
-# 	for shot_event in data_home:
-# 		x.append(shot_event['X'])
-# 		y.append(shot_event['Y'])
-# 		xg.append(shot_event['xG'])
-# 		team.append(shot_event['h_team'])
-# 		minute.append(shot_event['minute'])
-
-# 	for shot_event in data_away:
-# 		x.append(shot_event['X'])
-# 		y.append(shot_event['Y'])
-# 		xg.append(shot_event['xG'])
-# 		team.append(shot_event['a_team'])
-# 		minute.append(shot_event['minute'])
-
-# 	col_names = ['x', 'y', 'xg', 'team', 'minute']
-# 	df = pd.DataFrame([x, y, xg, team, minute], index=col_names)
-
-# 	return df.T
-
-
-# def main():
-# 	data = get_data()
-# 	xg_df = get_xg(data)
-# 	print(xg_df)
-
-
-# main()
