@@ -50,7 +50,13 @@ def pitch_testing(df):
     print(df['y_loc'])
     print(df['player'])
 
-    pitch.scatter(df['x_loc'], df['y_loc'], ax=ax)
+    plt.gca().invert_yaxis()
+
+    pitch.scatter(df['x_loc'], df['y_loc'], ax=ax, c='#EA6969', s=100, alpha=0.7)
+    # For different colours for teams, use multiple plots
+    # Check for size.
+    # Check for annotation
+    plt.title('Matchweek x Goals Represenatation')
 
     plt.show()
 
