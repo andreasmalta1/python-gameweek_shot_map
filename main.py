@@ -7,6 +7,40 @@ import matplotlib.pyplot as plt
 from mplsoccer.pitch import VerticalPitch
 
 
+def team_colours(col):
+    primary_colour = {
+        "Arsenal": "#EF0107",
+        "Aston Villa": "#95BFE5",
+        "Bournemouth": "#DA291C",
+        "Brentford": "#E30613",
+        "Brighton": "#0057B8",
+        "Chelsea": "#034694",
+        "Crystal Palace": "#1B458F",
+        "Everton": "#003399",
+        "Fulham": "#FFFFFF",
+        "Leeds": "#FFCD00",
+        "Leicester": "#003090",
+        "Liverpool": "#C8102E",
+        "Manchester City": "#6CABDD",
+        "Manchester United": "#DA291C",
+        "Nottingham Forest": "#E53233",
+        "Newcastle United": "#241F20",
+        "Southampton": "#D71920",
+        "Tottenham": "#132257",
+        "West Ham": "#7A263A",
+        "Wolverhampton Wanderers": "#FDB913",
+    }
+
+    clr = []
+
+    for team in col:
+        if team in primary_colour:
+            clr.append(primary_colour[team])
+        else:
+            print(team)
+    return clr
+
+
 def get_data(match_id):
     base_url = 'https://understat.com/match/'
     url = base_url + match_id
@@ -28,7 +62,7 @@ def append_data(shot_data, shot_event, team):
     if team == 'h':
         team_against = 'a'
     
-    shot_data['x_loc'].append(float(shot_event['X'])*120)
+    shot_data['x_loc'].append(float(shot_event['X'])*100)
     shot_data['y_loc'].append(float(shot_event['Y'])*80)
     shot_data['xg'].append(float(shot_event['xG']))
     shot_data['team'].append(shot_event[f'{team}_team'])
@@ -39,8 +73,10 @@ def append_data(shot_data, shot_event, team):
 
 def pitch_testing(df):
     text_color ='w'
-    pitch = VerticalPitch(pitch_type='statsbomb', pitch_color='#22312B',
-                            line_color='#C7D5CC', half=True)
+    pitch = VerticalPitch(pitch_type='custom', pitch_color='#22312B',
+                          line_color='#C7D5CC', half=True,
+                          pitch_length=100, pitch_width=80,
+                          spot_scale=0.003)
 
     fig, ax = pitch.draw(figsize=(13, 8.5), constrained_layout=True, tight_layout=False)
     fig.set_facecolor('#22312B')
@@ -50,12 +86,12 @@ def pitch_testing(df):
     print(df['y_loc'])
     print(df['player'])
 
-    plt.gca().invert_yaxis()
+    # plt.gca().invert_yaxis()
 
-    pitch.scatter(df['x_loc'], df['y_loc'], ax=ax, c='#EA6969', s=100, alpha=0.7)
-    # For different colours for teams, use multiple plots
+    pitch.scatter(df['x_loc'], df['y_loc'], color=team_colours(df["team"]), ax=ax)
+    for index, row in df.iterrows():
+        pitch.annotate(text=row['player'], xy=(row['x_loc'], row['y_loc']), ax=ax)
     # Check for size.
-    # Check for annotation
     plt.title('Matchweek x Goals Represenatation')
 
     plt.show()
@@ -89,9 +125,18 @@ def main():
 
     df = pd.DataFrame(shot_data)
     pitch_testing(df)
-    print(df.loc[df['xg'].idxmax()])
+    print(df[df.xg == df.xg.max()])
+    print(df[df.xg == df.xg.min()])
 
 main()
 
 # https://www.youtube.com/watch?v=2RhTuRWNqUc&ab_channel=McKayJohns
 # Check for video on pitches he mentions in intro
+# Own goals are not inlcuded as goals but misses
+# Amended pitch size + df calculations - more accurate
+# Added player annotations
+# Make colours for teams - edit the team colours (copy)
+
+# Change point size accoridng to xg
+# How can I make players more spread out?
+# Add text box
