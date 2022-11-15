@@ -82,17 +82,13 @@ def pitch_testing(df):
     fig.set_facecolor('#22312B')
     ax.patch.set_facecolor('#22312B')
 
-    print(df['x_loc'])
-    print(df['y_loc'])
-    print(df['player'])
-
-    # plt.gca().invert_yaxis()
-
-    pitch.scatter(df['x_loc'], df['y_loc'], color=team_colours(df["team"]), ax=ax)
+    pitch.scatter(df['x_loc'], df['y_loc'], color=team_colours(df["team"]), s=df['xg']*150, ax=ax)
+    
     for index, row in df.iterrows():
-        pitch.annotate(text=row['player'], xy=(row['x_loc'], row['y_loc']), ax=ax)
-    # Check for size.
-    plt.title('Matchweek x Goals Represenatation')
+        if row['xg'] > 0.77 or row['xg'] < 0.1:
+            pitch.annotate(text=row['player'], xy=(row['x_loc'] + 0.5, row['y_loc'] + 2), ax=ax)
+    
+    plt.title('Matchweek 16 XG Representation')
 
     plt.show()
 
@@ -125,17 +121,14 @@ def main():
 
     df = pd.DataFrame(shot_data)
     pitch_testing(df)
-    print(df[df.xg == df.xg.max()])
-    print(df[df.xg == df.xg.min()])
+    print(df)
+    # print(df[df.xg == df.xg.max()])
+    # print(df[df.xg == df.xg.min()])
 
 main()
 
 # https://www.youtube.com/watch?v=2RhTuRWNqUc&ab_channel=McKayJohns
-# Check for video on pitches he mentions in intro
 # Own goals are not inlcuded as goals but misses
-# Amended pitch size + df calculations - more accurate
-# Added player annotations
-# Make colours for teams - edit the team colours (copy)
 
 # Change point size accoridng to xg
 # How can I make players more spread out?
