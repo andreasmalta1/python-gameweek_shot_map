@@ -5,9 +5,10 @@ import pandas as pd
 import matplotlib as mlp
 import matplotlib.pyplot as plt
 from mplsoccer.pitch import VerticalPitch
+from adjustText import adjust_text
 
 
-def team_colours(col):
+def team_colours(column):
     primary_colour = {
         "Arsenal": "#EF0107",
         "Aston Villa": "#95BFE5",
@@ -28,17 +29,16 @@ def team_colours(col):
         "Southampton": "#D71920",
         "Tottenham": "#132257",
         "West Ham": "#7A263A",
-        "Wolverhampton Wanderers": "#FDB913",
-    }
+        "Wolverhampton Wanderers": "#FDB913"}
 
-    clr = []
+    colors = []
 
-    for team in col:
+    for team in column:
         if team in primary_colour:
-            clr.append(primary_colour[team])
+            colors.append(primary_colour[team])
         else:
             print(team)
-    return clr
+    return colors
 
 
 def get_data(match_id):
@@ -83,18 +83,23 @@ def pitch_testing(df):
     ax.patch.set_facecolor('#22312B')
 
     pitch.scatter(df['x_loc'], df['y_loc'], color=team_colours(df["team"]), s=df['xg']*150, ax=ax)
+
+    players = []
     
     for index, row in df.iterrows():
         if row['xg'] > 0.77 or row['xg'] < 0.1:
-            pitch.annotate(text=row['player'], xy=(row['x_loc'] + 0.5, row['y_loc'] + 2), ax=ax)
+            players.append(pitch.annotate(text=row['player'], xy=(row['x_loc'], row['y_loc'] -1), size=15, ax=ax))
+
+    # adjust_text(players, arrowprops=dict(arrowstyle='->', color='white'))
+    adjust_text(players)
     
-    plt.title('Matchweek 16 XG Representation')
+    plt.title('Matchweek 16 xG Representation', size=25, color=text_color)
 
     plt.show()
 
 
 def main():
-    match_ids = ['18345','18346', '18347', '18351', '18344', '18343', '18342', '18348', '18350', '18349']
+    match_ids = ['18356','18352', '18355', '18358', '18359', '18360', '18357', '18361', '18353', '18354']
     shot_data = {
         'x_loc': [],
         'y_loc': [],
@@ -122,8 +127,8 @@ def main():
     df = pd.DataFrame(shot_data)
     pitch_testing(df)
     print(df)
-    # print(df[df.xg == df.xg.max()])
-    # print(df[df.xg == df.xg.min()])
+    print(df[df.xg == df.xg.max()])
+    print(df[df.xg == df.xg.min()])
 
 main()
 
